@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('tools', 'ToolsController@index');
-Route::get('tools/{tool}', 'ToolsController@show');
-Route::post('tools', 'ToolsController@store');
+Route::get('/tools',                'ToolsController@index');
+Route::get('/tools/{tool}',         'ToolsController@show');
+Route::post('/tools',               'ToolsController@store');
+Route::patch('/tools/{tool}',       'ToolsController@update');
+Route::delete('/tools/{tool}',      'ToolsController@destroy');

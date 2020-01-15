@@ -18,7 +18,7 @@ class CreateToolsTable extends Migration
             $table->string('title');
             $table->string('link');
             $table->string('description');
-            $table->string('tags')->nullable();
+            $table->jsonb('tags');
             $table->timestamps();
         });
     }

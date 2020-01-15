@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Tool extends Model
 {
@@ -14,7 +15,7 @@ class Tool extends Model
     ];
 
     protected $casts = [
-        'tags' => 'json',
+        'tags' => 'array',
     ];
 
     protected $hidden = [
