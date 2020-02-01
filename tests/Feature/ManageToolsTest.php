@@ -22,7 +22,7 @@ class ManageToolsTest extends TestCase
             'tags' => $this->faker->words(5),
         ];
 
-        $response = $this->postJson('/tools', $attributes)
+        $response = $this->postJson('api/tools', $attributes)
             ->assertStatus(201);
         
         $responseArray = $response->decodeResponseJson();
@@ -41,7 +41,7 @@ class ManageToolsTest extends TestCase
 
         $tool = factory('App\Tool')->create();
 
-        $this->getJson($tool->path())
+        $this->getJson('api' . $tool->path())
             ->assertExactJson($tool->toArray());
     }
 
@@ -55,7 +55,7 @@ class ManageToolsTest extends TestCase
             array_push($tools, $tool->toArray());
         }
 
-        $response = $this->getJson('/tools');
+        $response = $this->getJson('api/tools');
 
         $response->assertExactJson($tools);
     }
@@ -82,7 +82,7 @@ class ManageToolsTest extends TestCase
             }
         }
 
-        $response = $this->getJson("/tools?tag={$chosenTag}");
+        $response = $this->getJson("api/tools?tag={$chosenTag}");
 
         $response->assertExactJson($filteredTools);
     }
@@ -92,7 +92,7 @@ class ManageToolsTest extends TestCase
     {
         $tool = factory('App\Tool')->create();
 
-        $this->delete($tool->path())
+        $this->delete('api' . $tool->path())
             ->assertStatus(204);
         
         $this->assertDatabaseMissing('tools', $tool->only('id'));
@@ -110,7 +110,7 @@ class ManageToolsTest extends TestCase
             'tags' => $this->faker->words(5),
         ];
 
-        $this->patchJson($tool->path(), $attributes)
+        $this->patchJson('api' . $tool->path(), $attributes)
             ->assertStatus(204);
         
         $attributes['tags'] = json_encode($attributes['tags']);
