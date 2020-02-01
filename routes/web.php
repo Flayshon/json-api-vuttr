@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return 'VUTTR API Online';
 });
 
 Route::get('/tools',                'ToolsController@index');
