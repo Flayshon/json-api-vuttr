@@ -2,10 +2,11 @@
 
 namespace App;
 
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Tool extends Model
+class Tool extends Model implements JWTSubject
 {
     protected $fillable = [
         'title',
@@ -26,5 +27,15 @@ class Tool extends Model
     public function path()
     {
         return "/tools/{$this->id}";
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

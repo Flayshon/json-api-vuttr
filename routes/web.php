@@ -12,6 +12,10 @@
 */
 
 Route::get('/', function () {
-    //return view('welcome');
-    return 'VUTTR API Online';
+    return view('welcome');
+    //return 'VUTTR API Online';
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
