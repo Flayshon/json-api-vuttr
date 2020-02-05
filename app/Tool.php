@@ -2,11 +2,10 @@
 
 namespace App;
 
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Tool extends Model implements JWTSubject
+class Tool extends Model
 {
     protected $fillable = [
         'title',
@@ -22,20 +21,16 @@ class Tool extends Model implements JWTSubject
     protected $hidden = [
         'created_at',
         'updated_at',
+        'user'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
     public function path()
     {
         return "/tools/{$this->id}";
-    }
-
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    public function getJWTCustomClaims()
-    {
-        return [];
     }
 }

@@ -17,8 +17,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/tools',                'ToolsController@index');
-Route::get('/tools/{tool}',         'ToolsController@show');
-Route::post('/tools',               'ToolsController@store');
-Route::patch('/tools/{tool}',       'ToolsController@update');
-Route::delete('/tools/{tool}',      'ToolsController@destroy');
+//JWT Token management
+Route::post('/login',                   'Api\Auth\LoginController@login');
+Route::post('/refresh',                 'Api\Auth\LoginController@refresh');
+
+//Authenticated routes (JWT)
+Route::get('/tools',                    'Api\ToolsController@index');
+Route::get('/tools/{tool}',             'Api\ToolsController@show');
+Route::post('/tools',                   'Api\ToolsController@store');
+Route::patch('/tools/{tool}',           'Api\ToolsController@update');
+Route::delete('/tools/{tool}',          'Api\ToolsController@destroy');
+
+//Public routes
+Route::get('/public-tools',             'ToolsController@index');
+Route::get('/public-tools/{tool}',      'ToolsController@show');
+Route::post('/public-tools',            'ToolsController@store');
+Route::patch('/public-tools/{tool}',    'ToolsController@update');
+Route::delete('/public-tools/{tool}',   'ToolsController@destroy');

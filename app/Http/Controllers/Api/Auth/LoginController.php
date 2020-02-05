@@ -9,10 +9,23 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only(['email', 'passworld']);
+        $credentials = $request->only(['email', 'password']);
 
-        $token = auth()->attempt($credentials);
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Incorrect credentials'], 401);
+        }
 
-        return $token;
+        return response()->json(['token' => $token]);
+    }
+
+    public function refresh()
+    {
+        try {
+            $newToken = auth()->refresh();
+        } catch (\Tymon\JWTAuth\Exceptions\TokenBlacklistedException $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+
+        return response()->json(['token' => $newToken]);
     }
 }
