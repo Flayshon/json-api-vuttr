@@ -48,12 +48,7 @@ class ToolsController extends Controller
             return response()->json(['error' => $e->getMessage()], 401);
         }
 
-        $attributes = request()->validate([
-            'title'         =>  'required|min:2',
-            'link'          =>  'required|min:3',
-            'description'   =>  'required|min:3',
-            'tags'          =>  'required',
-        ]);
+        $attributes = $this->validateToolAttributes();
 
         $tool = $user->tools()->create($attributes);
 
@@ -69,14 +64,9 @@ class ToolsController extends Controller
         }
 
         if ($tool->user->id == $user->getAuthIdentifier()) {
-            request()->validate([
-                'title'         =>  'required|min:2',
-                'link'          =>  'required|min:3',
-                'description'   =>  'required|min:3',
-                'tags'          =>  'required',
-            ]);
+            $attributes = $this->validateToolAttributes();
 
-            $tool->update(request()->all());
+            $tool->update($attributes);
 
             return response()->json([], 204);
         }
@@ -99,5 +89,15 @@ class ToolsController extends Controller
         }
 
         return response()->json(['error' => "You're not allowed to delete this tool."], 403);
+    }
+
+    private function validateToolAttributes()
+    {
+        return request()->validate([
+            'title'         =>  'required|min:2',
+            'link'          =>  'required|min:3',
+            'description'   =>  'required|min:3',
+            'tags'          =>  'required',
+        ]);
     }
 }
