@@ -21,12 +21,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/login',                   'Api\Auth\LoginController@login');
 Route::post('/refresh',                 'Api\Auth\LoginController@refresh');
 
-//Authenticated routes (JWT)
-Route::get('/tools',                    'Api\ToolsController@index');
-Route::get('/tools/{tool}',             'Api\ToolsController@show');
-Route::post('/tools',                   'Api\ToolsController@store');
-Route::patch('/tools/{tool}',           'Api\ToolsController@update');
-Route::delete('/tools/{tool}',          'Api\ToolsController@destroy');
+//Secure routes (JWT)
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('/tools',                    'Api\ToolsController@index');
+    Route::get('/tools/{tool}',             'Api\ToolsController@show');
+    Route::post('/tools',                   'Api\ToolsController@store');
+    Route::patch('/tools/{tool}',           'Api\ToolsController@update');
+    Route::delete('/tools/{tool}',          'Api\ToolsController@destroy');
+});
 
 //Public routes
 Route::get('/public-tools',             'ToolsController@index');
