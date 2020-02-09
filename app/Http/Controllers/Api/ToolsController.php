@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Tool;
 
 class ToolsController extends Controller
 {
+    private $validationRules = [
+        'title'         =>  'required|min:2',
+        'link'          =>  'required|min:3',
+        'description'   =>  'required|min:3',
+        'tags'          =>  'required',
+    ];
+
     public function index()
     {
-        try {
-            $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
+        $user = auth()->user();
 
         if (request()->has('tag')) {
             $filtered = $user->tools()->whereJsonContains('tags', request('tag'))->get();
@@ -27,11 +30,7 @@ class ToolsController extends Controller
 
     public function show(Tool $tool)
     {
-        try {
-            $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
+        $user = auth()->user();
 
         if ($tool->user->id == $user->getAuthIdentifier()) {
             return response()->json($tool);
@@ -42,31 +41,31 @@ class ToolsController extends Controller
     
     public function store()
     {
-        try {
-            $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
+        $user = auth()->user();
+        
+        $validator = Validator::make(request()->all(), $this->validationRules);
+        
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $attributes = $this->validateToolAttributes();
-
-        $tool = $user->tools()->create($attributes);
+        $tool = $user->tools()->create(request()->all());
 
         return response()->json($tool, 201);
     }
 
     public function update(Tool $tool)
     {
-        try {
-            $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
+        $user = auth()->user();
 
         if ($tool->user->id == $user->getAuthIdentifier()) {
-            $attributes = $this->validateToolAttributes();
+            $validator = Validator::make(request()->all(), $this->validationRules);
+        
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
 
-            $tool->update($attributes);
+            $tool->update(request()->all());
 
             return response()->json([], 204);
         }
@@ -76,11 +75,7 @@ class ToolsController extends Controller
 
     public function destroy(Tool $tool)
     {
-        try {
-            $user = auth()->userOrFail();
-        } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
+        $user = auth()->user();
 
         if ($tool->user->id == $user->getAuthIdentifier()) {
             $tool->delete();
@@ -89,15 +84,5 @@ class ToolsController extends Controller
         }
 
         return response()->json(['error' => "You're not allowed to delete this tool."], 403);
-    }
-
-    private function validateToolAttributes()
-    {
-        return request()->validate([
-            'title'         =>  'required|min:2',
-            'link'          =>  'required|min:3',
-            'description'   =>  'required|min:3',
-            'tags'          =>  'required',
-        ]);
     }
 }

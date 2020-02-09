@@ -13,9 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/
 
 //JWT Token management
 Route::post('/login',                   'Api\Auth\LoginController@login');
@@ -36,3 +38,7 @@ Route::get('/public-tools/{tool}',      'ToolsController@show');
 Route::post('/public-tools',            'ToolsController@store');
 Route::patch('/public-tools/{tool}',    'ToolsController@update');
 Route::delete('/public-tools/{tool}',   'ToolsController@destroy');
+
+Route::fallback(function(){
+    return response()->json(['error' => 'API endpoint not found'], 404);
+});

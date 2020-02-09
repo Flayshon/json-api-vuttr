@@ -24,6 +24,8 @@ class LoginController extends Controller
             $newToken = auth()->refresh();
         } catch (\Tymon\JWTAuth\Exceptions\TokenBlacklistedException $e) {
             return response()->json(['error' => $e->getMessage()], 401);
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
         }
 
         return response()->json(['token' => $newToken]);

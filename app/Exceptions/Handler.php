@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -53,6 +55,12 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof UnauthorizedHttpException) {
             return response()->json(['error' => $exception->getMessage()], $exception->getStatusCode());
+        }
+        else if ($exception instanceof QueryException) {
+            return response()->json(['error' => 'Invalid :id format (expected Integer)'], 404);
+        } else if ($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'error' => 'A '.str_replace('App\\', '', $exception->getModel()).' with the provided :id could not be found'], 404);
         }
 
         return parent::render($request, $exception);
