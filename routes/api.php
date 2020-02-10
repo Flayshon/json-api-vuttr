@@ -19,6 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 */
 
+//API Public Documentation
+Route::get('/docs', function () {
+    return view('docs.index');
+});
+
 //JWT Token management
 Route::post('/register',            'Api\Auth\LoginController@register');
 Route::post('/login',               'Api\Auth\LoginController@login');
