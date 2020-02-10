@@ -42,6 +42,11 @@ class ToolsController extends Controller
     public function store()
     {
         $user = auth()->user();
+
+        $rawContent = request()->getContent();
+        if ((is_null(json_decode($rawContent, true))) && (json_last_error() != 'JSON_ERROR_NONE')) {
+            return response()->json(['error' => 'Malformed JSON provided'], 422);
+        }
         
         $validator = Validator::make(request()->all(), $this->validationRules);
         
@@ -57,6 +62,11 @@ class ToolsController extends Controller
     public function update(Tool $tool)
     {
         $user = auth()->user();
+
+        $rawContent = request()->getContent();
+        if ((is_null(json_decode($rawContent, true))) && (json_last_error() != 'JSON_ERROR_NONE')) {
+            return response()->json(['error' => 'Malformed JSON provided'], 422);
+        }
 
         if ($tool->user->id == $user->getAuthIdentifier()) {
             $validator = Validator::make(request()->all(), $this->validationRules);

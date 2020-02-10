@@ -63,6 +63,8 @@ class Handler extends ExceptionHandler
                 'error' => 'A '.str_replace('App\\', '', $exception->getModel()).' with the provided :id could not be found'], 404);
         }
 
+        //dd($exception);
+
         return parent::render($request, $exception);
     }
 }
