@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     protected $validateRegistration = [
         'name' => ['required', 'string', 'max:255'],

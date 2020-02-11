@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\DB;
 
 class Tool extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'title',
         'link',
@@ -14,14 +19,24 @@ class Tool extends Model
         'tags',
     ];
 
-    protected $casts = [
-        'tags' => 'array',
-    ];
-
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
     protected $hidden = [
         'created_at',
         'updated_at',
         'user'
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'tags' => 'array',
     ];
 
     public function user()

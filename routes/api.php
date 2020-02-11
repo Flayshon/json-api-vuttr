@@ -25,9 +25,9 @@ Route::get('/docs', function () {
 });
 
 //JWT Token management
-Route::post('/register',            'Api\Auth\LoginController@register');
-Route::post('/login',               'Api\Auth\LoginController@login');
-Route::post('/refresh',             'Api\Auth\LoginController@refresh');
+Route::post('/register',            'Api\Auth\AuthController@register');
+Route::post('/login',               'Api\Auth\AuthController@login');
+Route::post('/refresh',             'Api\Auth\AuthController@refresh');
 
 //Secure routes (JWT)
 Route::group(['middleware' => 'jwt.auth'], function () {

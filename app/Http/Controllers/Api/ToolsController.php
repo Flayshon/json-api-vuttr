@@ -8,6 +8,11 @@ use App\Tool;
 
 class ToolsController extends Controller
 {
+    /**
+     * Validation rules for store and update operations with a Tool
+     *
+     * @var array
+     */
     private $validationRules = [
         'title'         =>  'required|min:2',
         'link'          =>  'required|min:3',
@@ -15,6 +20,11 @@ class ToolsController extends Controller
         'tags'          =>  'required',
     ];
 
+    /**
+     * Display a listing of Tools.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         $user = auth()->user();
@@ -28,6 +38,12 @@ class ToolsController extends Controller
         return response()->json($user->tools);
     }
 
+    /**
+     * Display the specified Tool.
+     *
+     * @param  Tool  $tool
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show(Tool $tool)
     {
         $user = auth()->user();
@@ -39,6 +55,11 @@ class ToolsController extends Controller
         return response()->json(['error' => "You're not allowed to view this tool."], 403);
     }
     
+    /**
+     * Store a newly created Tool in storage.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store()
     {
         $user = auth()->user();
@@ -59,6 +80,12 @@ class ToolsController extends Controller
         return response()->json($tool, 201);
     }
 
+    /**
+     * Update the specified Tool in storage.
+     *
+     * @param  Tool  $tool
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Tool $tool)
     {
         $user = auth()->user();
@@ -83,6 +110,12 @@ class ToolsController extends Controller
         return response()->json(['error' => "You're not allowed to update this tool."], 403);
     }
 
+    /**
+     * Remove the specified Tool from storage.
+     *
+     * @param  Tool  $tool
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(Tool $tool)
     {
         $user = auth()->user();

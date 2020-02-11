@@ -4,11 +4,60 @@ FORMAT: 1A
 
 "Very Useful Tools to Remember" API
 
+# Group Auth
+
+Resources related to authenticating a user.
+
+## User Registration [/api/register{?name,email,password}]
+
+### JWT Register [POST]
+
++ Parameters
+    + name: John (required, string) - Name of the user
+    + email: john@foo.org (required, string) - A unique and valid email address
+    + password: foobar13 (required, string) - The desired password
+
++ Response 201 (application/json)
+
+        {
+            "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6MzAwMFwvYXBpXC9yZWdpc3RlciIsImlhdCI6MTU4MTQyNzMwMywiZXhwIjoxNTgxNDMwOTAzLCJuYmYiOjE1ODE0MjczMDMsImp0aSI6InRXMHVlb2RnZGFLaEtVSlMiLCJzdWIiOjIyLCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.ExRFXBcngXgUyNocPl_BKm7bMuVW-xF6KIfa4vXVhEw",
+            "token_type": "bearer",
+            "expires_in": 3600
+        }
+
+## User Login [/api/login{?email,password}]
+
+### JWT Login [POST]
+
++ Parameters
+    + email: john@foo.org (required, string) - A registered user email address
+    + password: foobar13 (required, string) - The current password for that user
+
++ Response 200 (application/json)
+
+        {
+            "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6MzAwMFwvYXBpXC9yZWdpc3RlciIsImlhdCI6MTU4MTQyNzMwMywiZXhwIjoxNTgxNDMwOTAzLCJuYmYiOjE1ODE0MjczMDMsImp0aSI6InRXMHVlb2RnZGFLaEtVSlMiLCJzdWIiOjIyLCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.ExRFXBcngXgUyNocPl_BKm7bMuVW-xF6KIfa4vXVhEw",
+            "token_type": "bearer",
+            "expires_in": 3600
+        }
+
+## Get a new Auth Token [/api/refresh]
+
+### JWT Refresh [POST]
+
++ Response 200 (application/json)
+
+        {
+            "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6MzAwMFwvYXBpXC9yZWdpc3RlciIsImlhdCI6MTU4MTQyNzMwMywiZXhwIjoxNTgxNDMwOTAzLCJuYmYiOjE1ODE0MjczMDMsImp0aSI6InRXMHVlb2RnZGFLaEtVSlMiLCJzdWIiOjIyLCJwcnYiOiI4N2UwYWYxZWY5ZmQxNTgxMmZkZWM5NzE1M2ExNGUwYjA0NzU0NmFhIn0.ExRFXBcngXgUyNocPl_BKm7bMuVW-xF6KIfa4vXVhEw",
+            "token_type": "bearer",
+            "expires_in": 3600
+        }
+
 # Group Tools
 
 Resources related to tools in the API.
 
-## Tools Collection [/api/tools{?tag}]
+## Tools collection [/api/tools{?tag}]
 
 + Parameters
     + tag: node (optional, string) - A tag that can be used to filter results
@@ -19,11 +68,12 @@ Resources related to tools in the API.
 
         [
             {
-                id: 1,
-                title: "Notion",
-                link: "https://notion.so",
-                description: "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ",
-                tags: [
+                "id": 1,
+                "user_id": 1,
+                "title": "Notion",
+                "link": "https://notion.so",
+                "description": "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ",
+                "tags": [
                     "organization",
                     "planning",
                     "collaboration",
@@ -32,11 +82,12 @@ Resources related to tools in the API.
                 ]
             },
             {
-                id: 2,
-                title: "json-server",
-                link: "https://github.com/typicode/json-server",
-                description: "Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.",
-                tags: [
+                "id": 2,
+                "user_id": 1,
+                "title": "json-server",
+                "link": "https://github.com/typicode/json-server",
+                "description": "Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges.",
+                "tags": [
                     "api",
                     "json",
                     "schema",
@@ -46,11 +97,12 @@ Resources related to tools in the API.
                 ]
             },
             {
-                id: 3,
-                title: "fastify",
-                link: "https://www.fastify.io/",
-                description: "Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.",
-                tags: [
+                "id": 3,
+                "user_id": 2,
+                "title": "fastify",
+                "link": "https://www.fastify.io/",
+                "description": "Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2.",
+                "tags": [
                     "web",
                     "framework",
                     "node",
@@ -81,6 +133,7 @@ Resources related to tools in the API.
             "link": "https://github.com/typicode/hotel",
             "description": "Local app manager. Start apps within your browser, developer tool with local .localhost domain and https out of the box.",
             "tags":["node", "organizing", "webapps", "domain", "developer", "https", "proxy"],
+            "user_id": 1,
             "id":5
         }
 
@@ -95,11 +148,12 @@ Resources related to tools in the API.
 
         [
             {
-                id: 1,
-                title: "Notion",
-                link: "https://notion.so",
-                description: "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ",
-                tags: [
+                "id": 1,
+                "user_id": 1,
+                "title": "Notion",
+                "link": "https://notion.so",
+                "description": "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ",
+                "tags": [
                     "organization",
                     "planning",
                     "collaboration",
@@ -115,11 +169,10 @@ Resources related to tools in the API.
 
         [
             {
-                id: 1,
-                title: "Notion Updated",
-                link: "https://notion.so",
-                description: "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ",
-                tags: [
+                "title": "Notion Updated",
+                "link": "https://notion.so",
+                "description": "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized. ",
+                "tags": [
                     "organization",
                     "planning",
                     "collaboration",
