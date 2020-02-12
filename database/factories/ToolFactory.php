@@ -11,5 +11,6 @@ $factory->define(Tool::class, function (Faker $faker) {
         'link' => $faker->url,
         'description' => $faker->text(140),
         'tags' => $faker->words(5),
+        'user_id' => factory(App\User::class),
     ];
 });

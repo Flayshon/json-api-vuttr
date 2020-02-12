@@ -9,7 +9,7 @@ use App\Tool;
 class ToolsController extends Controller
 {
     /**
-     * Validation rules for store and update operations with a Tool
+     * Validation rules for store and update operations with a Tool.
      *
      * @var array
      */
