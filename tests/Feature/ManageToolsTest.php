@@ -4,16 +4,28 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Tests\TestCase;
 
 class ManageToolsTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    public function actingAs(Authenticatable $user, $driver = null)
+    {
+        $token = JWTAuth::fromUser($user);
+        $this->withHeader('Authorization', 'Bearer ' . $token);
+
+        return $this;
+    }
+
     /** @test */
     public function a_user_can_create_a_tool()
     {
-        //$user = factory('App\User')->create();
+        $this->withoutExceptionHandling();
+
+        $user = factory('App\User')->create();
 
         $attributes = [
             'title' => $this->faker->company,
@@ -22,14 +34,16 @@ class ManageToolsTest extends TestCase
             'tags' => $this->faker->words(5),
         ];
 
-        $response = $this->postJson('api/tools', $attributes)
+        $response = $this->actingAs($user)
+            ->postJson('api/tools', $attributes)
             ->assertStatus(201);
-        
+
         $responseArray = $response->decodeResponseJson();
 
         $attributes['id'] = $responseArray['id'];
+        $attributes['user_id'] = $user->id;
         $response->assertExactJson($attributes);
-        
+
         $attributes['tags'] = json_encode($attributes['tags']);
         $this->assertDatabaseHas('tools', $attributes);
     }
@@ -37,11 +51,12 @@ class ManageToolsTest extends TestCase
     /** @test */
     public function a_user_can_view_a_tool()
     {
-        //$user = factory('App\User')->create();
+        $user = factory('App\User')->create();
 
         $tool = factory('App\Tool')->create();
 
-        $this->getJson('api' . $tool->path())
+        $this->actingAs($user)
+            ->getJson('api' . $tool->path())
             ->assertExactJson($tool->toArray());
     }
 
@@ -50,7 +65,7 @@ class ManageToolsTest extends TestCase
     {
         $tools = [];
 
-        for ($i=0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $tool = factory('App\Tool')->create();
             array_push($tools, $tool->toArray());
         }
@@ -65,11 +80,11 @@ class ManageToolsTest extends TestCase
     {
         // Generating a set of tools
         $tools = [];
-        for ($i=0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $tool = factory('App\Tool')->create();
             array_push($tools, $tool->toArray());
         }
-        
+
         // Choosing a tag to search for
         $tags = $tool->tags;
         $chosenTag = array_pop($tags);
@@ -94,7 +109,7 @@ class ManageToolsTest extends TestCase
 
         $this->delete('api' . $tool->path())
             ->assertStatus(204);
-        
+
         $this->assertDatabaseMissing('tools', $tool->only('id'));
     }
 
@@ -112,7 +127,7 @@ class ManageToolsTest extends TestCase
 
         $this->patchJson('api' . $tool->path(), $attributes)
             ->assertStatus(204);
-        
+
         $attributes['tags'] = json_encode($attributes['tags']);
         $this->assertDatabaseHas('tools', $attributes);
     }
