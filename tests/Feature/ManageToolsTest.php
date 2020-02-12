@@ -12,6 +12,44 @@ class ManageToolsTest extends TestCase
     use RefreshDatabase, WithFaker, AttachJwtToken;
 
     /** @test */
+    public function guests_cannot_manage_tools()
+    {
+        $tool = factory('App\Tool')->create();
+
+        $this->get('api/tools')
+            ->assertStatus(401);
+
+        $this->getJson('api' . $tool->path())
+            ->assertStatus(401);
+
+        $this->patchJson('api' . $tool->path(), $tool->toArray())
+            ->assertStatus(401);
+        
+        $this->postJson('api/tools', $tool->toArray())
+            ->assertStatus(401);
+        
+        $this->deleteJson('api' . $tool->path())
+            ->assertStatus(401);
+    }
+
+    /** @test */
+    public function an_authenticated_user_cannot_manage_the_tools_of_others()
+    {
+        $this->actingAs(factory('App\User')->create());
+
+        $tool = factory('App\Tool')->create();
+
+        $this->getJson('api' . $tool->path())
+            ->assertStatus(403);
+
+        $this->patchJson('api' . $tool->path(), $tool->toArray())
+            ->assertStatus(403);
+        
+        $this->deleteJson('api' . $tool->path())
+            ->assertStatus(403);
+    }
+
+    /** @test */
     public function a_user_can_create_a_tool()
     {
         $user = factory('App\User')->create();
@@ -51,7 +89,7 @@ class ManageToolsTest extends TestCase
     public function a_user_can_view_all_their_tools()
     {
         $user = factory('App\User')->create();
-        
+
         $tools = [];
 
         for ($i = 0; $i < 3; $i++) {
@@ -68,7 +106,7 @@ class ManageToolsTest extends TestCase
     public function a_user_can_view_all_tools_with_a_certain_tag()
     {
         $user = factory('App\User')->create();
-        
+
         // Generating a set of tools
         $tools = [];
         for ($i = 0; $i < 3; $i++) {

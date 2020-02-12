@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Tool;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,5 +15,13 @@ class ToolTest extends TestCase
         $tool = factory('App\Tool')->create();
 
         $this->assertEquals("/tools/{$tool->id}", $tool->path());
+    }
+
+    /** @test */
+    public function it_belongs_to_a_user()
+    {
+        $tool = factory('App\Tool')->create();
+
+        $this->assertInstanceOf('App\User', $tool->user);
     }
 }
